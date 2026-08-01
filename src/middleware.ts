@@ -9,6 +9,12 @@ export async function middleware(request: NextRequest) {
     },
   })
 
+  // Prevent site-wide 500 error if Vercel env vars are missing
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    console.error('Missing Supabase environment variables in Vercel')
+    return response
+  }
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
