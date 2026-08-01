@@ -14,11 +14,17 @@ export default async function PublicLayout({
 }: {
   children: React.ReactNode
 }) {
-  const supabase = await createClient()
-  const { data: settings } = await supabase
-    .from('site_settings')
-    .select('*')
-    .single()
+  let settings = null
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from('site_settings')
+      .select('*')
+      .single()
+    settings = data
+  } catch (error) {
+    console.error('Failed to fetch site settings in layout', error)
+  }
 
   return (
     <SiteSettingsProvider settings={settings}>
